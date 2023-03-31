@@ -56,9 +56,9 @@ const Contact = () => {
         m="40px 0 0 0"
         height="75vh"
         sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
+          // "& .MuiDataGrid-root": {
+          //   border: "none",
+          // },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
