@@ -1,9 +1,16 @@
-import React from "react";
-import { Box, Button, TextField, useColorScheme } from "@mui/material";
+import React, { useEffect } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  useColorScheme,
+  Typography,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+// import firebase from "firebase/app";
 
 const initialValues = {
   firstName: "",
@@ -12,6 +19,8 @@ const initialValues = {
   contact: "",
   address1: "",
   address2: "",
+  excelCsvFile: null,
+  excelFile: null,
 };
 
 const phoneRegExp =
@@ -27,12 +36,41 @@ const userSchema = yup.object().shape({
     .required("required"),
   address1: yup.string().required("required"),
   address2: yup.string().required("required"),
+  excelCsvFile: yup.mixed(),
+  excelFile: yup.mixed(),
 });
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const handleFormSubmit = (values) => {
     console.log(values);
+    const [file, setFile] = useState(null);
   };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    setFile(file);
+  };
+
+  // useEffect(() => {
+  //   db.collection("file").onSnapshot((snapshot) =>
+  //     setFile(
+  //       snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         data: doc.data(),
+  //       }))
+  //     )
+  //   );
+  // }, []);
+
+  // const sendFile = (e)=> {
+  //   e.preventDefault()
+  //   db.collection ('file').add({
+  //     name: "Ibk",
+  //     decription:"Logistics data",
+  //     file:"csv"
+  //   })
+  // }
+
   return (
     <Box m="20px">
       <Header title="CREATE USER" subtitle="Create New User Profile" />
@@ -149,11 +187,30 @@ const Form = () => {
                 }}
               />
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary"  variant="contain">
-
-              Create New User
-              </Button>
+            <Box display="flex" alignItems="center">
+              <Box mr={2} flexGrow={1}>
+                <Typography variant="subtitle2" color="textSecondary">
+                  Upload a CSV file:
+                </Typography>
+                <input
+                  type="file"
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  onChange={(event) => {
+                    const file = event.target.files[0];
+                    // handle the uploaded file here
+                  }}
+                />
+              </Box>
+              <Box>
+                <Button color="primary" variant="contained">
+                  Login
+                </Button>
+              </Box>
+              <Box ml={2}>
+                <Button type="submit" color="secondary" variant="contained">
+                  Create New User
+                </Button>
+              </Box>
             </Box>
           </form>
         )}

@@ -117,15 +117,15 @@ const Sidebar = () => {
             </Box>
           )}
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
-              title="Dashboard"
-              to="/"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+          <Item
+            title="Profile Form"
+            to="/"
+            icon={<PersonOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
 
+          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -161,14 +161,15 @@ const Sidebar = () => {
               sx={{ m: "15px 0 5px 20px" }}
             >
               Pages
+              <Item
+                title="Dashboard"
+                to="/dashboard"
+                icon={<HomeOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
             </Typography>
-            <Item
-              title="Profile Form"
-              to="/form"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+
             <Item
               title="Calendar"
               to="/calendar"
