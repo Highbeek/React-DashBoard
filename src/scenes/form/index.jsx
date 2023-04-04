@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -10,15 +11,21 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
-// import firebase from "firebase/app";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
+import { auth, googleProvider } from "../../firebase";
 
 const initialValues = {
   firstName: "",
   lastName: "",
   email: "",
+  password: "",
   contact: "",
   address1: "",
-  address2: "",
+  addPhotoUrl: "",
   excelCsvFile: null,
   excelFile: null,
 };
@@ -40,6 +47,34 @@ const userSchema = yup.object().shape({
   excelFile: yup.mixed(),
 });
 const Form = () => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const newUser = async (email, password) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Account Created");
+    } catch (err) {
+      alert(err);
+    }
+  };
+  const signIn = async (email, password) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const handleFormSubmit = (values) => {
     console.log(values);
@@ -50,26 +85,6 @@ const Form = () => {
     const file = event.target.files[0];
     setFile(file);
   };
-
-  // useEffect(() => {
-  //   db.collection("file").onSnapshot((snapshot) =>
-  //     setFile(
-  //       snapshot.docs.map((doc) => ({
-  //         id: doc.id,
-  //         data: doc.data(),
-  //       }))
-  //     )
-  //   );
-  // }, []);
-
-  // const sendFile = (e)=> {
-  //   e.preventDefault()
-  //   db.collection ('file').add({
-  //     name: "Ibk",
-  //     decription:"Logistics data",
-  //     file:"csv"
-  //   })
-  // }
 
   return (
     <Box m="20px">
@@ -138,7 +153,22 @@ const Form = () => {
                 error={!!touched.email && !!errors.email}
                 helperText={touched.email && errors.email}
                 sx={{
-                  gridColumn: "span 4",
+                  gridColumn: "span 2",
+                }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="password"
+                label="Password"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{
+                  gridColumn: "span 2",
                 }}
               />
               <TextField
@@ -168,22 +198,22 @@ const Form = () => {
                 error={!!touched.address1 && !!errors.address1}
                 helperText={touched.address1 && errors.address1}
                 sx={{
-                  gridColumn: "span 4",
+                  gridColumn: "span 2",
                 }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Address 2"
+                type="url"
+                label="Photo URL"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.address2}
-                name="address2"
-                error={!!touched.address2 && !!errors.address2}
-                helperText={touched.address2 && errors.address2}
+                value={values.photoUrl}
+                name="photoUrl"
+                error={!!touched.photoUrl && !!errors.photoUrl}
+                helperText={touched.photoUrl && errors.photoUrl}
                 sx={{
-                  gridColumn: "span 4",
+                  gridColumn: "span 2",
                 }}
               />
             </Box>
@@ -202,15 +232,52 @@ const Form = () => {
                 />
               </Box>
               <Box>
-                <Button color="primary" variant="contained">
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                  onClick={() => {
+                    signIn(values.email, values.password);
+                  }}
+                >
                   Login
                 </Button>
               </Box>
               <Box ml={2}>
-                <Button type="submit" color="secondary" variant="contained">
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => {
+                    newUser(
+                      values.email,
+                      values.password,
+                      values.addPhotoUrl,
+                      values.excelCsvFile,
+                      values.excelFile
+                    );
+                  }}
+                >
                   Create New User
                 </Button>
               </Box>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              mt={2}
+            >
+              {/* <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                onClick={() => {
+                  signInWithGoogle;
+                }}
+              >
+                Sign Up with Google
+              </Button> */}
             </Box>
           </form>
         )}

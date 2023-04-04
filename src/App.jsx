@@ -9,6 +9,7 @@ import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Contact from "./scenes/contacts";
 
+import PrivateRoute from "./components/PrivateRoute";
 import Invoices from "./scenes/invoices";
 import Form from "./scenes/form";
 import Calendar from "./scenes/calendar";

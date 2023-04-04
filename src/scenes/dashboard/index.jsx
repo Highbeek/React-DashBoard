@@ -12,16 +12,52 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
+import { useState, useEffect } from "react";
+import { auth } from "../../firebase";
+import { updateCurrentUser } from "firebase/auth";
 
+const getUserDetails = async (userId) => {
+  const userDetailsDoc = await firestore.collection("users").doc(userId).get();
+  const userDetails = userDetailsDoc.data();
+  return userDetails;
+};
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [user, setUser] = useState(null);
+
+  const signIn = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      setUser(user);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      const fetchUser = async () => {
+        const userDetails = await updateCurrentUser(user.uid);
+        setUser(userDetails);
+      };
+      fetchUser();
+    }
+  }, [user]);
 
   return (
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header
+          title="DASHBOARD"
+          subtitle={`Welcome to your dashboard ${user?.firstName || ""}`}
+        />
 
         <Box>
           <Button
