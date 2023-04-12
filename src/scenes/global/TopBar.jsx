@@ -23,6 +23,9 @@ const Topbar = () => {
     try {
       await signOut(auth);
       navigate("/");
+       {
+         console.log("you signed out");
+       }
     } catch (err) {
       console.error(err);
     }
@@ -58,7 +61,7 @@ const Topbar = () => {
         </IconButton>
         <IconButton onClick={logout}>
           <PersonOutlinedIcon />
-          {console.log("you signed out")}
+         
         </IconButton>
       </Box>
     </Box>

@@ -61,6 +61,7 @@ const Form = () => {
   const signIn = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+       alert("You are Signed In");
       navigate("/dashboard");
     } catch (error) {
       alert(error);
@@ -229,6 +230,7 @@ const Form = () => {
                     const file = event.target.files[0];
                     // handle the uploaded file here
                   }}
+                  autoComplete="autoComplete"
                 />
               </Box>
               <Box>
